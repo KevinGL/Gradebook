@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Bienvenue sur Gradebook{% endblock %}
+
+{% block body %}
+
+<p>
+    Bienvenue sur Gradebook, une application simple, intuitive et sécurisée permettant de gérer les et stocker les résultats de votre établissement scolaire
+</p>
+
+<div>
+    <a href="{{ url('app_login') }}">S'authentifier</a>
+</div>
+
+<img src="/images/Dashboard.jpg" alt="Dashboard" />
+
+<ul>
+    <li>Facile à utiliser</li>
+    <li>Suivi clair des résultats</li>
+    <li>Accès sécurisé</li>
+</ul>
+
+<p>
+    Parce que suivre les progrès de vos élèves doit être simple
+</p>
+
+<div>
+    <a href="">À propos</a>
+    <a href="">Contact</a>
+</div>
+
+{% endblock %}
