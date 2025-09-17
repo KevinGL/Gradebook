@@ -1,10 +1,31 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello GradeController!{% endblock %}
+{% block title %}Bienvenue {{ app.user.username }} !{% endblock %}
 
 {% block body %}
 
 <div>
-    
+    <h1>Bienvenue {{ app.user.username }} !</h1>
+
+    <div>
+        {% if "ROLE_TEACHER" in app.user.roles %}
+            <h2>Vos classes</h2>
+
+            <ul>
+                {% for class in app.user.schoolClasses %}
+                    <li><a href="{{ url('view_schoolclass', {'id': class.id}) }}">{{ class.name }}</a></li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <h2>Vous êtes en {{ app.user.class.name }}</h2>
+            <h2>Vos notes</h2>
+            <ul>
+                {% for key, value in averages %}
+                    <li>{{ key }}: {{ value }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
 </div>
+
 {% endblock %}
