@@ -7,6 +7,7 @@ use App\Entity\Subject;
 use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -18,6 +19,7 @@ class GradeType extends AbstractType
     {
         $builder
             ->add('value', NumberType::class, ["label" => "Valeur", "html5" => true, "scale" => 2, "attr" => ["min" => 0, "max" => 20]])
+            ->add("date", DateType::class)
             ->add("save", SubmitType::class, ["label" => "Enregistrer"])
         ;
     }

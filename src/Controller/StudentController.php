@@ -33,7 +33,8 @@ final class StudentController extends AbstractController
         $newGrade = new Grade();
 
         $newGrade->setSubject($this->getUser()->getSubject())
-                ->setStudent($student);
+                ->setStudent($student)
+                ->setDate(new \DateTime());
 
         $form = $this->createForm(GradeType::class, $newGrade);
         $form->handleRequest($req);
@@ -45,7 +46,7 @@ final class StudentController extends AbstractController
 
             $this->addFlash("success", "Note ajoutée à " . $student->getUsername());
 
-            return $this->redirectToRoute("view_user", ["id" => $id]);
+            return $this->redirectToRoute("view_student", ["id" => $id, "subjectID" => $this->getUser()->getSubject()->getId()]);
         }
 
         $subject = $subjectRepo->find($subjectID);
@@ -68,7 +69,8 @@ final class StudentController extends AbstractController
             "student" => $student,
             "form" => $form,
             "grades" => $grades,
-            "subjects" => $subjects
+            "subjects" => $subjects,
+            "currentSubject" => $subject
         ]);
     }
 }
