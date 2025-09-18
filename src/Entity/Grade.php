@@ -24,6 +24,9 @@ class Grade
     #[ORM\Column]
     private ?float $value = null;
 
+    #[ORM\Column]
+    private ?\DateTime $date = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -61,6 +64,18 @@ class Grade
     public function setValue(float $value): static
     {
         $this->value = $value;
+
+        return $this;
+    }
+
+    public function getDate(): ?\DateTime
+    {
+        return $this->date;
+    }
+
+    public function setDate(\DateTime $date): static
+    {
+        $this->date = $date;
 
         return $this;
     }

@@ -3,6 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\Grade;
+use App\Entity\Subject;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -40,4 +42,15 @@ class GradeRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    public function findBySubjectStudent(Subject $subject, User $student): array
+    {
+        return $this->createQueryBuilder("g")
+            ->where("g.subject = :subject")
+            ->andWhere("g.student = :student")
+            ->setParameter("subject", $subject)
+            ->setParameter("student", $student)
+            ->getQuery()
+            ->getResult();
+    }
 }

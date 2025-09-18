@@ -1,11 +1,11 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Bienvenue {{ app.user.username }} !{% endblock %}
+{% block title %}Bienvenue sur votre dashboard {{ app.user.username }} !{% endblock %}
 
 {% block body %}
 
 <div>
-    <h1>Bienvenue {{ app.user.username }} !</h1>
+    <h1>Bienvenue sur votre dashboard {{ app.user.username }} !</h1>
 
     <div>
         {% if "ROLE_TEACHER" in app.user.roles %}
@@ -21,6 +21,12 @@
             <h2>Vos notes</h2>
             <ul>
                 {% for key, value in averages %}
+                    <li>{{ key }}: {{ value }}</li>
+                {% endfor %}
+            </ul>
+            <h2>Vos enseignants</h2>
+            <ul>
+                {% for key, value in teachers %}
                     <li>{{ key }}: {{ value }}</li>
                 {% endfor %}
             </ul>

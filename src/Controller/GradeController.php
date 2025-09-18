@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\SubjectRepository;
+use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -10,25 +11,27 @@ use Symfony\Component\Routing\Attribute\Route;
 final class GradeController extends AbstractController
 {
     #[Route('/grades', name: 'app_grades')]
-    public function index(SubjectRepository $repo): Response
+    public function index(SubjectRepository $subjectRepo, UserRepository $userRepo): Response
     {
         if(!$this->getUser())
         {
             return $this->redirectToRoute("app_home");
         }
 
-        $subjects = $repo->findAll();
+        $subjects = $subjectRepo->findAll();
+        $users = $userRepo->findAll();
 
         $grades = [];
         $averages = [];
-
-        foreach($subjects as $s)
-        {
-            $grades[$s->getId()] = ['sum' => 0.0, 'count' => 0, 'subject' => $s->getName()];
-        }
+        $teachers = [];
 
         if(in_array("ROLE_STUDENT", $this->getUser()->getRoles()))
         {
+            foreach($subjects as $s)
+            {
+                $grades[$s->getId()] = ['sum' => 0.0, 'count' => 0, 'subject' => $s->getName()];
+            }
+            
             $allGrades = $this->getUser()->getGrades()->toArray();
             
             foreach($allGrades as $g)
@@ -51,11 +54,25 @@ final class GradeController extends AbstractController
                     $averages[$g["subject"]] = round($g["sum"] / $g["count"], 2);
                 }
             }
+
+            //////////////////////////////////////////////////////////////////////////////////////
+
+            foreach($users as $user)
+            {
+                if(in_array("ROLE_TEACHER", $user->getRoles()))
+                {
+                    if(in_array($this->getUser()->getClass(), $user->getSchoolClasses()->toArray()))
+                    {
+                        $teachers[$user->getSubject()->getName()] = $user->getUsername();
+                    }
+                }
+            }
         }
         
         return $this->render('grade/index.html.twig',
         [
-            "averages" => $averages
+            "averages" => $averages,
+            "teachers" => $teachers
         ]);
     }
 }

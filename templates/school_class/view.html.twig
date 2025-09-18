@@ -11,7 +11,7 @@
 
     <ul>
         {% for student in schoolClass.students %}
-            <li><a href="{{ url('view_user', {'id': student.id}) }}">{{ student.username }}</a></li>
+            <li><a href="{{ url('view_student', {'id': student.id, 'subjectID': app.user.subject.id}) }}">{{ student.username }}</a></li>
         {% endfor %}
     </ul>
 </div>

@@ -11,8 +11,16 @@
         {% block javascripts %}
             {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% endblock %}
+
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
+        </script>
     </head>
     <body>
+        {% for messages in app.flashes %}
+            {{ messages | join("|") }}
+        {% endfor %}
+
         {% block body %}{% endblock %}
     </body>
 </html>
