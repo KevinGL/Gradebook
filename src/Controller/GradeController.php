@@ -97,7 +97,7 @@ final class GradeController extends AbstractController
 
         $grade = $repo->find($id);
 
-        if($this->getUser()->getSubject() != $grade->getSubject())
+        if($this->getUser()->getSubject() != $grade->getSubject() && !in_array("ROLE_ADMIN", $this->getUser()->getRoles()))
         {
             $this->addFlash("error", "Vous ne pouvez pas modifier la note d'une matière ne vous concernant pas");
 
@@ -137,7 +137,7 @@ final class GradeController extends AbstractController
 
         $grade = $repo->find($id);
 
-        if($this->getUser()->getSubject() != $grade->getSubject())
+        if($this->getUser()->getSubject() != $grade->getSubject() && !in_array("ROLE_ADMIN", $this->getUser()->getRoles()))
         {
             $this->addFlash("error", "Vous ne pouvez pas supprimer la note d'une matière ne vous concernant pas");
 

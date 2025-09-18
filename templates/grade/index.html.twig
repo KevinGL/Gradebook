@@ -16,7 +16,7 @@
                     <li><a href="{{ url('view_schoolclass', {'id': class.id}) }}">{{ class.name }}</a></li>
                 {% endfor %}
             </ul>
-        {% else %}
+        {% elseif "ROLE_STUDENT" in app.user.roles %}
             <h2>Vous êtes en {{ app.user.class.name }}</h2>
             <h2>Vos notes</h2>
             <ul>
