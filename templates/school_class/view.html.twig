@@ -14,6 +14,71 @@
             <li><a href="{{ url('view_student', {'id': student.id, 'subjectID': app.user.subject.id}) }}">{{ student.username }}</a></li>
         {% endfor %}
     </ul>
+
+    <div>
+        Moyenne de la classe dans votre matière : {{ average }}
+    </div>
+    
+    <div>
+        Moins bonne moyenne : {{ minAverage }}
+    </div>
+
+    <div>
+        Meilleure moyenne : {{ maxAverage }}
+    </div>
+
+    <canvas id="chart" style="width:100%; height:400px;"></canvas>
+
+    <a href="{{ url('export_schoolclass', {'id': schoolClass.id}) }}">Exporter le bilan des moyennes</a>
 </div>
+
+<script>
+    const xValues =
+    [
+        {% for student in schoolClass.students %}
+            "{{ student.username }}",
+        {% endfor %}
+    ];
+
+    const yValues =
+    [
+        {% for avg in averageByStudent %}
+            {{ avg }},
+        {% endfor %}
+    ];
+    
+    const ctx = document.getElementById("chart").getContext("2d");
+    const myChart = new Chart(ctx,
+    {
+        type: "bar",
+        data:
+        {
+            labels: xValues,
+            datasets:
+            [{
+                label: "Répartition des moyennes",
+                fill: false,
+                lineTension: 0,
+                backgroundColor: "rgba(0,128,192,1.0)",
+                data: yValues
+            }]
+        },
+        options:
+        {
+            responsive: true,
+            scales:
+            {
+                yAxes:
+                [{
+                    ticks:
+                    {
+                        min: 0,
+                        max: 20
+                    }
+                }]
+            }
+        }
+    });
+</script>
 
 {% endblock %}

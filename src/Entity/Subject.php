@@ -30,10 +30,17 @@ class Subject
     #[ORM\OneToMany(targetEntity: Grade::class, mappedBy: 'subject', orphanRemoval: true)]
     private Collection $grades;
 
+    /**
+     * @var Collection<int, Appreciation>
+     */
+    #[ORM\OneToMany(targetEntity: Appreciation::class, mappedBy: 'subject', orphanRemoval: true)]
+    private Collection $appreciations;
+
     public function __construct()
     {
         $this->teachers = new ArrayCollection();
         $this->grades = new ArrayCollection();
+        $this->appreciations = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -107,6 +114,36 @@ class Subject
             // set the owning side to null (unless already changed)
             if ($grade->getSubject() === $this) {
                 $grade->setSubject(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Appreciation>
+     */
+    public function getAppreciations(): Collection
+    {
+        return $this->appreciations;
+    }
+
+    public function addAppreciation(Appreciation $appreciation): static
+    {
+        if (!$this->appreciations->contains($appreciation)) {
+            $this->appreciations->add($appreciation);
+            $appreciation->setSubject($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAppreciation(Appreciation $appreciation): static
+    {
+        if ($this->appreciations->removeElement($appreciation)) {
+            // set the owning side to null (unless already changed)
+            if ($appreciation->getSubject() === $this) {
+                $appreciation->setSubject(null);
             }
         }
 

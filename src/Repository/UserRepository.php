@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\SchoolClass;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -57,4 +58,13 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    public function findBySchoolClass(SchoolClass $class): array
+    {
+        return $this->createQueryBuilder("u")
+            ->where("u.class = :class")
+            ->setParameter("class", $class)
+            ->getQuery()
+            ->getResult();
+    }
 }

@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\Appreciation;
 use App\Entity\Grade;
 use App\Form\GradeType;
+use App\Repository\AppreciationRepository;
 use App\Repository\GradeRepository;
 use App\Repository\SubjectRepository;
 use App\Repository\UserRepository;
@@ -16,7 +18,7 @@ use Symfony\Component\Routing\Attribute\Route;
 final class StudentController extends AbstractController
 {
     #[Route("/students/view/{id}/{subjectID}", name: "view_student")]
-    public function view(Request $req, UserRepository $repo, GradeRepository $gradeRepo, SubjectRepository $subjectRepo, EntityManagerInterface $em, int $id, int $subjectID): Response
+    public function view(Request $req, UserRepository $repo, GradeRepository $gradeRepo, SubjectRepository $subjectRepo, AppreciationRepository $appRepo, EntityManagerInterface $em, int $id, int $subjectID): Response
     {
         if(!$this->getUser())
         {
@@ -36,10 +38,10 @@ final class StudentController extends AbstractController
                 ->setStudent($student)
                 ->setDate(new \DateTime());
 
-        $form = $this->createForm(GradeType::class, $newGrade);
-        $form->handleRequest($req);
+        $gradeForm = $this->createForm(GradeType::class, $newGrade);
+        $gradeForm->handleRequest($req);
 
-        if($form->isSubmitted() && $form->isValid())
+        if($gradeForm->isSubmitted() && $gradeForm->isValid())
         {
             $em->persist($newGrade);
             $em->flush();
@@ -48,6 +50,8 @@ final class StudentController extends AbstractController
 
             return $this->redirectToRoute("view_student", ["id" => $id, "subjectID" => $this->getUser()->getSubject()->getId()]);
         }
+
+        ////////////////////////////////////////////////////////
 
         $subject = $subjectRepo->find($subjectID);
         $subjects = $subjectRepo->findAll();
@@ -64,13 +68,31 @@ final class StudentController extends AbstractController
             return ($a->getDate()->getTimestamp() < $b->getDate()->getTimestamp()) ? -1 : 1;
         });
 
-        return $this->render('user/view.html.twig',
+        $average = 0.0;
+
+        foreach($grades as $g)
+        {
+            $average += $g->getValue();
+        }
+
+        if(count($grades))
+        {
+            $average /= count($grades);
+        }
+
+        ////////////////////////////////////////////////////////
+
+        $appreciations = $appRepo->findBySubjectStudent($this->getUser()->getSubject(), $student);
+
+        return $this->render('student/view.html.twig',
         [
             "student" => $student,
-            "form" => $form,
+            "gradeForm" => $gradeForm,
             "grades" => $grades,
             "subjects" => $subjects,
-            "currentSubject" => $subject
+            "currentSubject" => $subject,
+            "average" => round($average, 2),
+            "appreciations" => $appreciations
         ]);
     }
 }

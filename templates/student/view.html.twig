@@ -1,0 +1,163 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ student.username }}{% endblock %}
+
+{% block body %}
+
+<div>
+    <h1>{{ student.username }}</h1>
+
+    <div>
+        {% for subject in subjects %}
+            <a href="{{ url('view_student', {'id': student.id, 'subjectID': subject.id}) }}">{{ subject.name }} {{ app.user.subject and subject.id == app.user.subject.id ? "(Votre matière)" }}</a>
+        {% endfor %}
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Note</th>
+                {% if "ROLE_ADMIN" in app.user.roles or currentSubject == app.user.subject %}
+                    <th>Action</th>
+                {% endif %}
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for grade in grades %}
+                <tr>
+                    <th>
+                        {{ grade.date | date("d/m/Y") }}
+                    </th>
+                    <td>
+                        {{ grade.value }}
+                    </td>
+                    {% if "ROLE_ADMIN" in app.user.roles or currentSubject == app.user.subject %}
+                        <td>
+                            <a href="{{ url('edit_grade', {'id': grade.id}) }}">Modifier</a>
+                            {#<a href="{{ url('delete_grade', {'id': grade.id}) }}">Supprimer</a>#}
+                            <button id="{{ grade.id }}" class="delete">Supprimer</button>
+                        </td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div>
+        Moyenne de l'élève dans votre matière : {{ average }}
+    </div>
+
+    {% set delay = (("now" | date("U") - (grades | last).date | date("U")) / (3600 * 24)) | round %}
+
+    {% if delay > 30 %}
+        <div>Cet élève n'a plus été noté depuis plus d'un mois !</div>
+    {% endif %}
+
+    <div>
+        <h3>Appréciations par trimestre</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Trimestre</th>
+                    <th>Votre appréciation</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for app in appreciations %}
+                    <tr>
+                        <th>
+                            {{ app.trimester }}
+                        </th>
+                        <td>
+                            {{ app.text }}
+                        </td>
+                        <td>
+                            <a href="{{ url('edit_app', {'id': app.id}) }}">Modifier</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <canvas id="chart" style="width:100%; height:400px;"></canvas>
+
+    {% if "ROLE_ADMIN" in app.user.roles or currentSubject.id == app.user.subject.id %}
+        <div>
+            Ajouter une note
+            
+            {{ form(gradeForm) }}
+        </div>
+    {% endif %}
+</div>
+
+<div id="modal" hidden>
+    Êtes-vous sûr de vouloir supprimer cette note ?
+    <button id="delete_yes">Oui</button>
+    <button id="delete_no">Non</button>
+</div>
+
+<script>
+    const xValues =
+    [
+        {% for grade in grades %}
+            "{{ grade.date | date("d/m/Y") }}",
+        {% endfor %}
+    ];
+
+    const yValues =
+    [
+        {% for grade in grades %}
+            {{ grade.value }},
+        {% endfor %}
+    ];
+    
+    const ctx = document.getElementById("chart").getContext("2d");
+    const myChart = new Chart(ctx,
+    {
+        type: "line",
+        data:
+        {
+            labels: xValues,
+            datasets:
+            [{
+                label: "{{ currentSubject.name }}",
+                fill: false,
+                lineTension: 0,
+                backgroundColor: "rgba(0,0,255,1.0)",
+                borderColor: "rgba(0,0,255,0.1)",
+                data: yValues
+            }]
+        }
+    });
+
+    /////////////////////////////////////////////////////////////
+
+    const buttons_delete = Array.from(document.getElementsByClassName("delete"));
+    const modal = document.getElementById("modal");
+    let idDelete;
+
+    buttons_delete.map((b) =>
+    {
+        b.addEventListener("click", () =>
+        {
+            idDelete = b.id;
+            modal.hidden = false;
+        });
+    });
+
+    document.getElementById("delete_yes").addEventListener("click", () =>
+    {
+        window.location.href = "/grades/delete/" + idDelete;
+    });
+
+    document.getElementById("delete_no").addEventListener("click", () =>
+    {
+        modal.hidden = true;
+    });
+</script>
+
+{% endblock %}
