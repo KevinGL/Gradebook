@@ -11,7 +11,7 @@
 
     <ul>
         {% for student in schoolClass.students %}
-            <li><a href="{{ url('view_student', {'id': student.id, 'subjectID': app.user.subject.id}) }}">{{ student.username }}</a></li>
+            <li><a href="{{ url('view_student', {'id': student.id, 'subjectID': app.user.subject.id, 'trimester': trimester}) }}">{{ student.username }}</a></li>
         {% endfor %}
     </ul>
 
@@ -29,7 +29,7 @@
 
     <canvas id="chart" style="width:100%; height:400px;"></canvas>
 
-    <a href="{{ url('export_schoolclass', {'id': schoolClass.id}) }}">Exporter le bilan des moyennes</a>
+    <a href="{{ url('export_schoolclass', {'id': schoolClass.id, 'trimester': trimester}) }}">Exporter le bilan des moyennes</a>
 </div>
 
 <script>

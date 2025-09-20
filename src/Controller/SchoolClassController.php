@@ -31,8 +31,8 @@ final class SchoolClassController extends AbstractController
         ]);
     }
 
-    #[Route("/schoolclass/{id}", name: "view_schoolclass")]
-    public function view(SchoolClassRepository $repo, UserRepository $userRepo, GradeRepository $gradeRepo, int $id): Response
+    #[Route("/schoolclass/{id}/{trimester}", name: "view_schoolclass")]
+    public function view(SchoolClassRepository $repo, UserRepository $userRepo, GradeRepository $gradeRepo, int $id, int $trimester): Response
     {
         if(!$this->getUser())
         {
@@ -58,7 +58,7 @@ final class SchoolClassController extends AbstractController
         {
             $studentAverage = 0.0;
 
-            $grades = $gradeRepo->findBySubjectStudent($this->getUser()->getSubject(), $s);
+            $grades = $gradeRepo->findBySubjectStudent($this->getUser()->getSubject(), $s, $trimester);
 
             foreach($grades as $g)
             {
@@ -98,12 +98,13 @@ final class SchoolClassController extends AbstractController
             "average" => round($average, 2),
             "minAverage" => $minAverage,
             "maxAverage" => $maxAverage,
-            "averageByStudent" => $averageByStudent
+            "averageByStudent" => $averageByStudent,
+            "trimester" => $trimester
         ]);
     }
 
-    #[Route("/schoolclass/export/{id}", name: "export_schoolclass")]
-    public function exportPDF(SchoolClassRepository $repo, GradeRepository $gradeRepo, UserRepository $userRepo, Pdf $pdf, int $id) : Response
+    #[Route("/schoolclass/export/{id}/{trimester}", name: "export_schoolclass")]
+    public function exportPDF(SchoolClassRepository $repo, GradeRepository $gradeRepo, UserRepository $userRepo, Pdf $pdf, int $id, int $trimester) : Response
     {
         if(!$this->getUser())
         {
@@ -127,7 +128,7 @@ final class SchoolClassController extends AbstractController
         {
             $studentAverage = 0.0;
 
-            $grades = $gradeRepo->findBySubjectStudent($this->getUser()->getSubject(), $s);
+            $grades = $gradeRepo->findBySubjectStudent($this->getUser()->getSubject(), $s, $trimester);
 
             foreach($grades as $g)
             {

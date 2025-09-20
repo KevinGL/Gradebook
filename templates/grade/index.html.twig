@@ -13,12 +13,19 @@
 
             <ul>
                 {% for class in app.user.schoolClasses %}
-                    <li><a href="{{ url('view_schoolclass', {'id': class.id}) }}">{{ class.name }}</a></li>
+                    <li>
+                        <div>
+                            {{ class.name }}
+                            <a href="{{ url('view_schoolclass', {'id': class.id, 'trimester': 1}) }}">Trimestre 1</a>
+                            <a href="{{ url('view_schoolclass', {'id': class.id, 'trimester': 2}) }}">Trimestre 2</a>
+                            <a href="{{ url('view_schoolclass', {'id': class.id, 'trimester': 3}) }}">Trimestre 3</a>
+                        </div>
+                    </li>
                 {% endfor %}
             </ul>
         {% elseif "ROLE_STUDENT" in app.user.roles %}
             <h2>Vous êtes en {{ app.user.class.name }}</h2>
-            <h2>Vos notes</h2>
+            <h2>Vos moyennes</h2>
             <ul>
                 {% for key, value in averages %}
                     <li>{{ key }}: {{ value }}</li>

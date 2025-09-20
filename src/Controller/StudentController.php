@@ -28,6 +28,7 @@ final class StudentController extends AbstractController
 
         if(in_array("ROLE_STUDENT", $this->getUser()->getRoles()))
         {
+            $this->addFlash("error", "Cette action est réservée aux enseignants");
             return $this->redirectToRoute("app_grades");
         }
         
@@ -108,6 +109,7 @@ final class StudentController extends AbstractController
 
         if(in_array("ROLE_STUDENT", $this->getUser()->getRoles()))
         {
+            $this->addFlash("error", "Cette action est reéservée aux enseignants");
             return $this->redirectToRoute("app_grades");
         }
         

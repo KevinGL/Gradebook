@@ -64,12 +64,6 @@
         Moyenne de l'élève dans cette matière : {{ average }}
     </div>
 
-    {% set delay = (("now" | date("U") - (grades | last).date | date("U")) / (3600 * 24)) | round %}
-
-    {% if delay > 30 %}
-        <div>Cet élève n'a plus été noté depuis plus d'un mois !</div>
-    {% endif %}
-
     <div>
         <h3>Appréciations par trimestre</h3>
         <table>
