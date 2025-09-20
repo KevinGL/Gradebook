@@ -47,7 +47,7 @@
         {% elseif "ROLE_ADMIN" in app.user.roles %}
             <div>
                 <a href="{{ url('app_teacher', {'page': 1}) }}">Liste des enseignants</a>
-                <a href="">Liste des élèves</a>
+                <a href="{{ url('app_student', {'page': 1}) }}">Liste des élèves</a>
             </div>
         {% endif %}
     </div>

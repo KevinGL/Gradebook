@@ -42,7 +42,8 @@ final class TeacherController extends AbstractController
         return $this->render('teacher/index.html.twig',
         [
             'teachers' => $teachers,
-            'nbPages' => $nbPages
+            'nbPages' => $nbPages,
+            "page" => $page
         ]);
     }
 

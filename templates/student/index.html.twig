@@ -1,20 +1,80 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello StudentController!{% endblock %}
+{% block title %}Liste des élèves{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+<div>
+    <h1>Liste des élèves</h1>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>D:/Datas/Web/Gradebook/src/Controller/StudentController.php</code></li>
-        <li>Your template at <code>D:/Datas/Web/Gradebook/templates/student/index.html.twig</code></li>
-    </ul>
+    <div>
+        {% for i in 1..nbPages %}
+            <a href="{{ url('app_student', {'page': i}) }}">{{ i }}</a>
+        {% endfor %}
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>Nom</th>
+                <th>Classe</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for student in students %}
+                <tr>
+                    <th>{{ student.id }}</th>
+                    <td>{{ student.username }}</td>
+                    <td>{{ student.class.name }}</td>
+                    <td>
+                        <a href="{{ url('edit_student', {'id': student.id}) }}">Modifier</a>
+                        <button id="{{ student.id }}" class="delete">Supprimer</button>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div>
+        {% for i in 1..nbPages %}
+            <a href="{{ url('app_student', {'page': i}) }}">{{ i }}</a>
+        {% endfor %}
+    </div>
+
+    <a href="{{ url('add_student') }}">Ajouter un élève</a>
 </div>
+
+<div id="modal" hidden>
+    Êtes-vous sûr de vouloir supprimer cet élève ?
+    <button id="delete_yes">Oui</button>
+    <button id="delete_no">Non</button>
+</div>
+
+<script>
+    const buttons_delete = Array.from(document.getElementsByClassName("delete"));
+    const modal = document.getElementById("modal");
+    let idDelete = "";
+
+    buttons_delete.map((b) =>
+    {
+        b.addEventListener("click", () =>
+        {
+            idDelete = b.id;
+            modal.hidden = false;
+        });
+    });
+
+    document.getElementById("delete_yes").addEventListener("click", () =>
+    {
+        window.location.href = "/student/delete/" + idDelete;
+    });
+
+    document.getElementById("delete_no").addEventListener("click", () =>
+    {
+        modal.hidden = true;
+    });
+</script>
 {% endblock %}
