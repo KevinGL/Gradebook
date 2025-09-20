@@ -80,8 +80,8 @@ final class GradeController extends AbstractController
         ]);
     }
 
-    #[Route('/grades/edit/{id}', name: 'edit_grade')]
-    public function edit(Request $req, EntityManagerInterface $em, GradeRepository $repo, int $id): response
+    #[Route('/grades/edit/{id}/{trimester}', name: 'edit_grade')]
+    public function edit(Request $req, EntityManagerInterface $em, GradeRepository $repo, int $id, int $trimester): response
     {
         if(!$this->getUser())
         {
@@ -101,7 +101,7 @@ final class GradeController extends AbstractController
         {
             $this->addFlash("error", "Vous ne pouvez pas modifier la note d'une matière ne vous concernant pas");
 
-            return $this->redirectToRoute("view_student", ["id" => $grade->getStudent()->getId(), "subjectID" => $grade->getSubject()->getId()]);
+            return $this->redirectToRoute("view_student", ["id" => $grade->getStudent()->getId(), "subjectID" => $grade->getSubject()->getId(), "trimester" => $trimester]);
         }
 
         $form = $this->createForm(GradeType::class, $grade);
@@ -114,7 +114,7 @@ final class GradeController extends AbstractController
 
             $this->addFlash("success", "Note mise à jour");
 
-            return $this->redirectToRoute("view_student", ["id" => $grade->getStudent()->getId(), "subjectID" => $grade->getSubject()->getId()]);
+            return $this->redirectToRoute("view_student", ["id" => $grade->getStudent()->getId(), "subjectID" => $grade->getSubject()->getId(), "trimester" => $trimester]);
         }
 
         return $this->render("grade/edit.html.twig", ["form" => $form]);

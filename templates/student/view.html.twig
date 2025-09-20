@@ -7,26 +7,16 @@
 <div>
     <h1>{{ student.username }}</h1>
 
-    <div>
-        <h2>1er trimestre</h2>
-        {% for subject in subjects %}
-            <a href="{{ url('view_student', {'id': student.id, 'subjectID': subject.id, 'trimester': 1}) }}">{{ subject.name }} {{ app.user.subject and subject.id == app.user.subject.id ? "(Votre matière)" }}</a>
-        {% endfor %}
-    </div>
-
-    <div>
-        <h2>2ème trimestre</h2>
-        {% for subject in subjects %}
-            <a href="{{ url('view_student', {'id': student.id, 'subjectID': subject.id, 'trimester': 2}) }}">{{ subject.name }} {{ app.user.subject and subject.id == app.user.subject.id ? "(Votre matière)" }}</a>
-        {% endfor %}
-    </div>
-
-    <div>
-        <h2>3ème trimestre</h2>
-        {% for subject in subjects %}
-            <a href="{{ url('view_student', {'id': student.id, 'subjectID': subject.id, 'trimester': 3}) }}">{{ subject.name }} {{ app.user.subject and subject.id == app.user.subject.id ? "(Votre matière)" }}</a>
-        {% endfor %}
-    </div>
+    {% for i in 1..3 %}
+        {% if i != trimester %}
+            <div>
+                <h2>Trimestre {{ i }}</h2>
+                {% for subject in subjects %}
+                    <a href="{{ url('view_student', {'id': student.id, 'subjectID': subject.id, 'trimester': i}) }}">{{ subject.name }} {{ app.user.subject and subject.id == app.user.subject.id ? "(Votre matière)" }}</a>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endfor %}
 
     <table>
         <thead>
@@ -50,7 +40,7 @@
                     </td>
                     {% if "ROLE_ADMIN" in app.user.roles or currentSubject == app.user.subject %}
                         <td>
-                            <a href="{{ url('edit_grade', {'id': grade.id}) }}">Modifier</a>
+                            <a href="{{ url('edit_grade', {'id': grade.id, 'trimester': trimester}) }}">Modifier</a>
                             {#<a href="{{ url('delete_grade', {'id': grade.id}) }}">Supprimer</a>#}
                             <button id="{{ grade.id }}" class="delete">Supprimer</button>
                         </td>
@@ -84,7 +74,7 @@
                             {{ app.text }}
                         </td>
                         <td>
-                            <a href="{{ url('edit_app', {'id': app.id}) }}">Modifier</a>
+                            <a href="{{ url('edit_app', {'id': app.id, 'trimester': trimester}) }}">Modifier</a>
                         </td>
                     </tr>
                 {% endfor %}
