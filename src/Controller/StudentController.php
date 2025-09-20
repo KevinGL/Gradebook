@@ -10,6 +10,7 @@ use App\Repository\GradeRepository;
 use App\Repository\SubjectRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Snappy\Pdf;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,8 +18,8 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class StudentController extends AbstractController
 {
-    #[Route("/students/view/{id}/{subjectID}", name: "view_student")]
-    public function view(Request $req, UserRepository $repo, GradeRepository $gradeRepo, SubjectRepository $subjectRepo, AppreciationRepository $appRepo, EntityManagerInterface $em, int $id, int $subjectID): Response
+    #[Route("/students/view/{id}/{subjectID}/{trimester}", name: "view_student")]
+    public function view(Request $req, UserRepository $repo, GradeRepository $gradeRepo, SubjectRepository $subjectRepo, AppreciationRepository $appRepo, EntityManagerInterface $em, int $id, int $subjectID, int $trimester): Response
     {
         if(!$this->getUser())
         {
@@ -56,7 +57,7 @@ final class StudentController extends AbstractController
         $subject = $subjectRepo->find($subjectID);
         $subjects = $subjectRepo->findAll();
 
-        $grades = $gradeRepo->findBySubjectStudent($subject, $student);
+        $grades = $gradeRepo->findBySubjectStudent($subject, $student, $trimester);
 
         usort($grades, function($a, $b)
         {
@@ -92,7 +93,42 @@ final class StudentController extends AbstractController
             "subjects" => $subjects,
             "currentSubject" => $subject,
             "average" => round($average, 2),
-            "appreciations" => $appreciations
+            "appreciations" => $appreciations,
+            "trimester" => $trimester
         ]);
+    }
+
+    #[Route("/students/export/{id}/{trimester}", name: "export_student")]
+    public function export(UserRepository $repo, GradeRepository $gradeRepo, Pdf $pdf, int $id, int $trimester): Response
+    {
+        if(!$this->getUser())
+        {
+            return $this->redirectToRoute("app_home");
+        }
+
+        if(in_array("ROLE_STUDENT", $this->getUser()->getRoles()))
+        {
+            return $this->redirectToRoute("app_grades");
+        }
+        
+        $student = $repo->find($id);
+
+        $grades = $gradeRepo->findForStudentByTrimester($student, $trimester);
+
+        $html = $this->renderView('student/pdf.html.twig',
+        [
+            'grades' => $grades,
+            "trimester" => $trimester,
+            "name" => $student->getUsername()
+        ]);
+
+        return new Response(
+            $pdf->getOutputFromHtml($html),
+            200,
+            [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="class.pdf"'
+            ]
+        );
     }
 }

@@ -5,16 +5,17 @@
     <title>Export</title>
 </head>
 <body>
+    <h1>Bulletin de {{ name }} (Trimestre {{ trimester }})</h1>
     <table>
         <thead>
             <tr>
-                <th>Nom</th>
+                <th>Matière</th>
                 <th>Moyenne</th>
             </tr>
         </thead>
 
         <tbody>
-            {% for key, value in averageByStudent %}
+            {% for key, value in grades %}
                 <tr>
                     <th>{{ key }}</th>
                     <td>{{ value }}</td>
@@ -22,9 +23,5 @@
             {% endfor %}
         </tbody>
     </table>
-
-    <div>
-        Moyenne générale : {{ average }}
-    </div>
 </body>
 </html>

@@ -8,8 +8,23 @@
     <h1>{{ student.username }}</h1>
 
     <div>
+        <h2>1er trimestre</h2>
         {% for subject in subjects %}
-            <a href="{{ url('view_student', {'id': student.id, 'subjectID': subject.id}) }}">{{ subject.name }} {{ app.user.subject and subject.id == app.user.subject.id ? "(Votre matière)" }}</a>
+            <a href="{{ url('view_student', {'id': student.id, 'subjectID': subject.id, 'trimester': 1}) }}">{{ subject.name }} {{ app.user.subject and subject.id == app.user.subject.id ? "(Votre matière)" }}</a>
+        {% endfor %}
+    </div>
+
+    <div>
+        <h2>2ème trimestre</h2>
+        {% for subject in subjects %}
+            <a href="{{ url('view_student', {'id': student.id, 'subjectID': subject.id, 'trimester': 2}) }}">{{ subject.name }} {{ app.user.subject and subject.id == app.user.subject.id ? "(Votre matière)" }}</a>
+        {% endfor %}
+    </div>
+
+    <div>
+        <h2>3ème trimestre</h2>
+        {% for subject in subjects %}
+            <a href="{{ url('view_student', {'id': student.id, 'subjectID': subject.id, 'trimester': 3}) }}">{{ subject.name }} {{ app.user.subject and subject.id == app.user.subject.id ? "(Votre matière)" }}</a>
         {% endfor %}
     </div>
 
@@ -46,7 +61,7 @@
     </table>
 
     <div>
-        Moyenne de l'élève dans votre matière : {{ average }}
+        Moyenne de l'élève dans cette matière : {{ average }}
     </div>
 
     {% set delay = (("now" | date("U") - (grades | last).date | date("U")) / (3600 * 24)) | round %}
@@ -92,6 +107,10 @@
             {{ form(gradeForm) }}
         </div>
     {% endif %}
+</div>
+
+<div>
+    <a href="{{ url('export_student', {'id': student.id, 'trimester': trimester}) }}">Générer bulletin</a>
 </div>
 
 <div id="modal" hidden>

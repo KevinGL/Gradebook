@@ -103,7 +103,7 @@ final class SchoolClassController extends AbstractController
     }
 
     #[Route("/schoolclass/export/{id}", name: "export_schoolclass")]
-    public function exportPDF(SchoolClassRepository $repo, Pdf $pdf, int $id) : Response
+    public function exportPDF(SchoolClassRepository $repo, GradeRepository $gradeRepo, UserRepository $userRepo, Pdf $pdf, int $id) : Response
     {
         if(!$this->getUser())
         {
@@ -118,9 +118,41 @@ final class SchoolClassController extends AbstractController
 
         $schoolClass = $repo->find($id);
 
+        $students = $userRepo->findBySchoolClass($schoolClass);
+
+        $average = 0.0;
+        $averageByStudent = [];
+
+        foreach($students as $s)
+        {
+            $studentAverage = 0.0;
+
+            $grades = $gradeRepo->findBySubjectStudent($this->getUser()->getSubject(), $s);
+
+            foreach($grades as $g)
+            {
+                $studentAverage += $g->getValue();
+            }
+
+            if(count($grades) > 0)
+            {
+                $studentAverage /= count($grades);
+            }
+            
+            $average += $studentAverage;
+
+            $averageByStudent [$s->getUsername()] = round($studentAverage, 2);
+        }
+
+        if(count($students) > 0)
+        {
+            $average /= count($students);
+        }
+
         $html = $this->renderView('school_class/pdf.html.twig',
         [
-            'schoolClass' => $schoolClass,
+            'averageByStudent' => $averageByStudent,
+            'average' => round($average, 2)
         ]);
 
         return new Response(
@@ -131,7 +163,5 @@ final class SchoolClassController extends AbstractController
                 'Content-Disposition' => 'inline; filename="class.pdf"'
             ]
         );
-
-        //return $this->redirectToRoute("view_schoolclass", ["id" => $id]);
     }
 }
