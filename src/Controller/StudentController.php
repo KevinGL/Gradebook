@@ -100,7 +100,7 @@ final class StudentController extends AbstractController
     }
 
     #[Route("/students/export/{id}/{trimester}", name: "export_student")]
-    public function export(UserRepository $repo, GradeRepository $gradeRepo, Pdf $pdf, int $id, int $trimester): Response
+    public function export(UserRepository $repo, GradeRepository $gradeRepo, AppreciationRepository $appRepo, Pdf $pdf, int $id, int $trimester): Response
     {
         if(!$this->getUser())
         {
@@ -116,12 +116,26 @@ final class StudentController extends AbstractController
         $student = $repo->find($id);
 
         $grades = $gradeRepo->findForStudentByTrimester($student, $trimester);
+        $appreciations = $appRepo->findByStudentTrimester($student, $trimester);
+
+        $average = 0.0;
+        foreach($grades as $g)
+        {
+            $average += $g;
+        }
+
+        if(count($grades) > 0)
+        {
+            $average /= count($grades);
+        }
 
         $html = $this->renderView('student/pdf.html.twig',
         [
             'grades' => $grades,
+            'appreciations' => $appreciations,
             "trimester" => $trimester,
-            "name" => $student->getUsername()
+            "name" => $student->getUsername(),
+            "average" => round($average, 2)
         ]);
 
         return new Response(

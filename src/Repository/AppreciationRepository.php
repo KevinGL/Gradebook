@@ -51,4 +51,24 @@ class AppreciationRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findByStudentTrimester($student, $trimester): array
+    {
+        $appreciations = $this->createQueryBuilder("a")
+            ->where("a.trimester = :trimester")
+            ->setParameter("trimester", $trimester)
+            ->andWhere("a.student = :student")
+            ->setParameter("student", $student)
+            ->getQuery()
+            ->getResult();
+        
+        $res = [];
+
+        foreach($appreciations as $a)
+        {
+            $res[$a->getSubject()->getName()] = $a->getText();
+        }
+
+        return $res;
+    }
 }

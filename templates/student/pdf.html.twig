@@ -11,6 +11,7 @@
             <tr>
                 <th>Matière</th>
                 <th>Moyenne</th>
+                <th>Appréciation</th>
             </tr>
         </thead>
 
@@ -19,9 +20,12 @@
                 <tr>
                     <th>{{ key }}</th>
                     <td>{{ value }}</td>
+                    <td>{{ appreciations[key] }}</td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
+
+    Moyenne générale : {{ average }}
 </body>
 </html>
