@@ -65,6 +65,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->grades = new ArrayCollection();
         $this->appreciations = new ArrayCollection();
+        $this->schoolClasses = new ArrayCollection();
     }
 
     public function getId(): ?int

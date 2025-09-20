@@ -20,3 +20,5 @@
 /assets/vendor/
 ###< symfony/asset-mapper ###
 /src/DataFixtures
+/appreciations.csv
+/bin/wkhtmltopdf.exe

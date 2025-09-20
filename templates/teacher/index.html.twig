@@ -1,0 +1,82 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des enseignants{% endblock %}
+
+{% block body %}
+
+<div>
+    <h1>Liste des enseignants</h1>
+
+    <div>
+        {% for i in 1..nbPages %}
+            <a href="{{ url('app_teacher', {'page': i}) }}">{{ i }}</a>
+        {% endfor %}
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>Nom</th>
+                <th>Matière enseignée</th>
+                <th>Nombre de classes</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for teacher in teachers %}
+                <tr>
+                    <th>{{ teacher.id }}</th>
+                    <td>{{ teacher.username }}</td>
+                    <td>{{ teacher.subject.name }}</td>
+                    <td>{{ teacher.schoolClasses | length }}</td>
+                    <td>
+                        <a href="{{ url('edit_teacher', {'id': teacher.id}) }}">Modifier</a>
+                        <button id="{{ teacher.id }}" class="delete">Supprimer</button>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div>
+        {% for i in 1..nbPages %}
+            <a href="{{ url('app_teacher', {'page': i}) }}">{{ i }}</a>
+        {% endfor %}
+    </div>
+
+    <a href="{{ url('add_teacher') }}">Ajouter un enseignant</a>
+</div>
+
+<div id="modal" hidden>
+    Êtes-vous sûr de vouloir supprimer cet enseignant ?
+    <button id="delete_yes">Oui</button>
+    <button id="delete_no">Non</button>
+</div>
+
+<script>
+    const buttons_delete = Array.from(document.getElementsByClassName("delete"));
+    const modal = document.getElementById("modal");
+    let idDelete = "";
+
+    buttons_delete.map((b) =>
+    {
+        b.addEventListener("click", () =>
+        {
+            idDelete = b.id;
+            modal.hidden = false;
+        });
+    });
+
+    document.getElementById("delete_yes").addEventListener("click", () =>
+    {
+        window.location.href = "/teacher/delete/" + idDelete;
+    });
+
+    document.getElementById("delete_no").addEventListener("click", () =>
+    {
+        modal.hidden = true;
+    });
+</script>
+{% endblock %}

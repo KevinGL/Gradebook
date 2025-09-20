@@ -67,4 +67,48 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->getQuery()
             ->getResult();
     }
+
+    public function findTeachers(int $page): array
+    {
+        return $this->createQueryBuilder('u')
+            ->where('u.roles LIKE :role')
+            ->setParameter('role', '%ROLE_TEACHER%')
+            ->setFirstResult(($page - 1) * $_ENV["LIMIT_PAGE"])
+            ->setMaxResults($_ENV["LIMIT_PAGE"])
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findNbPagesTeachers(): int
+    {
+        $teachers = $this->createQueryBuilder('u')
+            ->where('u.roles LIKE :role')
+            ->setParameter('role', '%ROLE_TEACHER%')
+            ->getQuery()
+            ->getResult();
+        
+        return round(count($teachers) / $_ENV["LIMIT_PAGE"]) + 1;
+    }
+
+    public function findStudents(int $page): array
+    {
+        return $this->createQueryBuilder('u')
+            ->where('u.roles LIKE :role')
+            ->setParameter('role', '%ROLE_STUDENT%')
+            ->setFirstResult(($page - 1) * $_ENV["LIMIT_PAGE"])
+            ->setMaxResults($_ENV["LIMIT_PAGE"])
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findNbPagesStudents(): int
+    {
+        $teachers = $this->createQueryBuilder('u')
+            ->where('u.roles LIKE :role')
+            ->setParameter('role', '%ROLE_STUDENT%')
+            ->getQuery()
+            ->getResult();
+        
+        return round(count($teachers) / $_ENV["LIMIT_PAGE"]);
+    }
 }

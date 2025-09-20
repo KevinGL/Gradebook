@@ -102,11 +102,13 @@
     </div>
 {% endif %}
 
-<div id="modal" hidden>
-    Êtes-vous sûr de vouloir supprimer cette note ?
-    <button id="delete_yes">Oui</button>
-    <button id="delete_no">Non</button>
-</div>
+{% if "ROLE_STUDENT" not in app.user.roles %}
+    <div id="modal" hidden>
+        Êtes-vous sûr de vouloir supprimer cette note ?
+        <button id="delete_yes">Oui</button>
+        <button id="delete_no">Non</button>
+    </div>
+{% endif %}
 
 <script>
     const xValues =
@@ -139,6 +141,21 @@
                 borderColor: "rgba(0,0,255,0.1)",
                 data: yValues
             }]
+        },
+        options:
+        {
+            responsive: true,
+            scales:
+            {
+                yAxes:
+                [{
+                    ticks:
+                    {
+                        min: 0,
+                        max: 20
+                    }
+                }]
+            }
         }
     });
 

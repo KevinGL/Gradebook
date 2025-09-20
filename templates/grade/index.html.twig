@@ -44,6 +44,11 @@
                     <a href="{{ url('view_student', {'id': app.user.id, 'subjectID': subject.id, 'trimester': i}) }}">Voir votre parcours en {{ subject.name }}</a>
                 {% endfor %}
             {% endfor %}
+        {% elseif "ROLE_ADMIN" in app.user.roles %}
+            <div>
+                <a href="{{ url('app_teacher', {'page': 1}) }}">Liste des enseignants</a>
+                <a href="">Liste des élèves</a>
+            </div>
         {% endif %}
     </div>
 </div>
