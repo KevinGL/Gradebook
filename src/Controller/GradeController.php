@@ -76,7 +76,8 @@ final class GradeController extends AbstractController
         return $this->render('grade/index.html.twig',
         [
             "averages" => $averages,
-            "teachers" => $teachers
+            "teachers" => $teachers,
+            "subjects" => $subjects
         ]);
     }
 

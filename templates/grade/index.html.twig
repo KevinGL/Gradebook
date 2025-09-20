@@ -37,6 +37,13 @@
                     <li>{{ key }}: {{ value }}</li>
                 {% endfor %}
             </ul>
+
+            {% for i in 1..3 %}
+                <h2>Trimestre {{ i }}</h2>
+                {% for subject in subjects %}
+                    <a href="{{ url('view_student', {'id': app.user.id, 'subjectID': subject.id, 'trimester': i}) }}">Voir votre parcours en {{ subject.name }}</a>
+                {% endfor %}
+            {% endfor %}
         {% endif %}
     </div>
 </div>

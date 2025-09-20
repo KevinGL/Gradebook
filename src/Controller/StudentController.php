@@ -26,9 +26,9 @@ final class StudentController extends AbstractController
             return $this->redirectToRoute("app_home");
         }
 
-        if(in_array("ROLE_STUDENT", $this->getUser()->getRoles()))
+        if(in_array("ROLE_STUDENT", $this->getUser()->getRoles()) && $id != $this->getUser()->getId())
         {
-            $this->addFlash("error", "Cette action est réservée aux enseignants");
+            $this->addFlash("error", "Cette page ne vous est pas accessible");
             return $this->redirectToRoute("app_grades");
         }
         
@@ -45,6 +45,12 @@ final class StudentController extends AbstractController
 
         if($gradeForm->isSubmitted() && $gradeForm->isValid())
         {
+            if(in_array("ROLE_STUDENT", $this->getUser()->getRoles()))
+            {
+                $this->addFlash("error", "Cette page ne vous est pas accessible");
+                return $this->redirectToRoute("app_grades");
+            }
+            
             $em->persist($newGrade);
             $em->flush();
 
@@ -84,7 +90,7 @@ final class StudentController extends AbstractController
 
         ////////////////////////////////////////////////////////
 
-        $appreciations = $appRepo->findBySubjectStudent($this->getUser()->getSubject(), $student);
+        $appreciations = $appRepo->findBySubjectStudent($subjectRepo->find($subjectID), $student);
 
         return $this->render('student/view.html.twig',
         [
@@ -143,8 +149,10 @@ final class StudentController extends AbstractController
             200,
             [
                 'Content-Type' => 'application/pdf',
-                'Content-Disposition' => 'inline; filename="class.pdf"'
+                'Content-Disposition' => 'inline; filename="' . $student->getUsername() . '.pdf"'
             ]
         );
     }
+
+    /////////////////////////////////////////////////////////////////////////////////
 }
