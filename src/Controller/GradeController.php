@@ -121,8 +121,8 @@ final class GradeController extends AbstractController
         return $this->render("grade/edit.html.twig", ["form" => $form]);
     }
 
-    #[Route('/grades/delete/{id}', name: 'delete_grade')]
-    public function delete(EntityManagerInterface $em, GradeRepository $repo, int $id): response
+    #[Route('/grades/delete/{id}/{trimester}', name: 'delete_grade')]
+    public function delete(EntityManagerInterface $em, GradeRepository $repo, int $id, int $trimester): response
     {
         if(!$this->getUser())
         {
@@ -142,7 +142,7 @@ final class GradeController extends AbstractController
         {
             $this->addFlash("error", "Vous ne pouvez pas supprimer la note d'une matière ne vous concernant pas");
 
-            return $this->redirectToRoute("view_student", ["id" => $grade->getStudent()->getId(), "subjectID" => $grade->getSubject()->getId()]);
+            return $this->redirectToRoute("view_student", ["id" => $grade->getStudent()->getId(), "subjectID" => $grade->getSubject()->getId(), "trimester" => $trimester]);
         }
 
         $em->remove($grade);
@@ -150,6 +150,6 @@ final class GradeController extends AbstractController
 
         $this->addFlash("success", "Note supprimée");
 
-        return $this->redirectToRoute("view_student", ["id" => $grade->getStudent()->getId(), "subjectID" => $grade->getSubject()->getId()]);
+        return $this->redirectToRoute("view_student", ["id" => $grade->getStudent()->getId(), "subjectID" => $grade->getSubject()->getId(), "trimester" => $trimester]);
     }
 }

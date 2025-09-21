@@ -2,10 +2,58 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Export</title>
+    <title>Bulletin de {{ name }} - Trimestre {{ trimester }}</title>
+    <style>
+        body {
+            font-family: "DejaVu Sans", Arial, sans-serif;
+            margin: 40px;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            font-size: 22px;
+            margin-bottom: 30px;
+            color: #1a237e;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 25px;
+        }
+        thead {
+            background-color: #1a237e;
+            color: white;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            font-size: 14px;
+            text-align: center;
+        }
+        th {
+            font-weight: 600;
+        }
+        tbody tr:nth-child(even) {
+            background-color: #f5f5f5;
+        }
+        .footer {
+            text-align: right;
+            margin-top: 30px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #1a237e;
+        }
+        .appreciation {
+            text-align: left;
+            font-size: 13px;
+            font-style: italic;
+            color: #555;
+        }
+    </style>
 </head>
 <body>
-    <h1>Bulletin de {{ name }} (Trimestre {{ trimester }})</h1>
+    <h1>Bulletin de {{ name }} - Trimestre {{ trimester }}</h1>
+
     <table>
         <thead>
             <tr>
@@ -14,18 +62,19 @@
                 <th>Appréciation</th>
             </tr>
         </thead>
-
         <tbody>
             {% for key, value in grades %}
                 <tr>
-                    <th>{{ key }}</th>
+                    <td>{{ key }}</td>
                     <td>{{ value }}</td>
-                    <td>{{ appreciations[key] }}</td>
+                    <td class="appreciation">{{ appreciations[key] }}</td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
 
-    Moyenne générale : {{ average }}
+    <div class="footer">
+        Moyenne générale : {{ average }}
+    </div>
 </body>
 </html>

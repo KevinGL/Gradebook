@@ -1,28 +1,59 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Log in!{% endblock %}
+{% block title %}Connexion - Gradebook{% endblock %}
 
 {% block body %}
-<form method="post">
+<section class="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-900 via-indigo-600 to-blue-400">
+  <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md m-2">
+    
+    <h1 class="text-2xl font-bold text-center text-gray-800 mb-6">Connexion</h1>
+
     {% if error %}
-        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+      <div class="mb-4 p-3 bg-red-100 text-red-700 text-sm rounded-lg">
+        {{ "Mauvais identifiants" }}
+      </div>
     {% endif %}
 
     {% if app.user %}
-        <div class="mb-3">
-            You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
-        </div>
+      <div class="mb-4 text-sm text-gray-600">
+        Connecté en tant que <span class="font-semibold">{{ app.user.userIdentifier }}</span>.
+        <a href="{{ path('app_logout') }}" class="text-indigo-600 hover:underline">Se déconnecter</a>
+      </div>
     {% endif %}
 
-    <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-    <label for="inputUsername">Username</label>
-    <input type="text" value="{{ last_username }}" name="username" id="inputUsername" class="form-control" autocomplete="username" required autofocus>
-    <label for="inputPassword">Password</label>
-    <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
-    <input type="hidden" name="_csrf_token" data-controller="csrf-protection" value="{{ csrf_token('authenticate') }}">
+    <form method="post" class="space-y-5">
+      <div>
+        <label for="inputUsername" class="block text-sm font-medium text-gray-700">Nom d'utilisateur</label>
+        <input type="text"
+               value="{{ last_username }}"
+               name="username"
+               id="inputUsername"
+               class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2"
+               autocomplete="username"
+               required autofocus>
+      </div>
 
-    <button class="btn btn-lg btn-primary" type="submit">
-        Sign in
-    </button>
-</form>
+      <div>
+        <label for="inputPassword" class="block text-sm font-medium text-gray-700">Mot de passe</label>
+        <input type="password"
+               name="password"
+               id="inputPassword"
+               class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2"
+               autocomplete="current-password"
+               required>
+      </div>
+
+      <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+      <button type="submit"
+              class="w-full py-2 px-4 bg-indigo-600 text-white font-semibold rounded-lg shadow hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1 transition">
+        Se connecter
+      </button>
+    </form>
+
+    {#<p class="mt-6 text-center text-sm text-gray-500">
+      Mot de passe oublié ? <a href="{{ path('app_forgot_password_request') }}" class="text-indigo-600 hover:underline">Réinitialiser</a>
+    </p>#}
+  </div>
+</section>
 {% endblock %}

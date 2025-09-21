@@ -18,7 +18,7 @@ class AppreciatonType extends AbstractType
     {
         $builder
             ->add('text', TextType::class)
-            ->add("save", SubmitType::class)
+            //->add("save", SubmitType::class, ["label" => "💾 Enregistrer", "attr" => ["class" => "px-6 py-2 bg-indigo-600 text-white font-medium rounded-lg shadow hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 transition"]])
         ;
     }
 

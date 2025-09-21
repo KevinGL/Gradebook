@@ -4,29 +4,68 @@
 
 {% block body %}
 
-<p>
-    Bienvenue sur Gradebook, une application simple, intuitive et sécurisée permettant de gérer les et stocker les résultats de votre établissement scolaire
-</p>
+<section class="bg-gradient-to-r from-indigo-600 to-blue-500 text-white">
+  <div class="max-w-7xl mx-auto px-6 py-20 text-center">
+    <h1 class="text-4xl md:text-6xl font-extrabold mb-4">Bienvenue sur <span class="text-yellow-300">Gradebook</span></h1>
+    <p class="text-lg md:text-xl mb-8">Une application simple, intuitive et sécurisée pour gérer et suivre les résultats scolaires de vos élèves.</p>
+    <div class="flex justify-center space-x-4">
+      <a href="{{ path('app_login') }}" class="px-6 py-3 bg-yellow-300 text-indigo-900 font-semibold rounded-lg shadow hover:bg-yellow-400 transition">S'authentifier</a>
+      <a href="#about" class="px-6 py-3 bg-white/20 rounded-lg shadow hover:bg-white/30 transition">Découvrir</a>
+    </div>
+  </div>
+</section>
 
-<div>
-    <a href="{{ url('app_login') }}">S'authentifier</a>
-</div>
+<section class="max-w-5xl mx-auto px-6 py-12">
+  <div class="relative w-full overflow-hidden rounded-xl shadow-lg" x-data="{ active: 0, slides: ['/images/Dashboard.png','/images/Grades.png','/images/Security.png'] }" x-init="setInterval(() => active = (active+1)%slides.length, 5000)">
+    <template x-for="(slide, i) in slides" :key="i">
+      <div x-show="active === i" class="w-full h-72 md:h-96">
+        <img :src="slide" alt="Démonstration" class="w-full h-full object-cover">
+      </div>
+    </template>
+    <button @click="active = (active-1+slides.length)%slides.length" class="absolute top-1/2 left-4 -translate-y-1/2 bg-indigo-600/70 text-white rounded-full p-2">‹</button>
+    <button @click="active = (active+1)%slides.length" class="absolute top-1/2 right-4 -translate-y-1/2 bg-indigo-600/70 text-white rounded-full p-2">›</button>
+  </div>
+</section>
 
-<img src="/images/Dashboard.jpg" alt="Dashboard" />
+<section class="bg-gray-50 py-16">
+  <div class="max-w-6xl mx-auto px-6 text-center">
+    <h2 class="text-3xl font-bold text-gray-800 mb-10">Pourquoi choisir Gradebook ?</h2>
+    <div class="grid md:grid-cols-3 gap-8">
+      <div class="p-6 bg-white rounded-xl shadow hover:shadow-lg transition">
+        <img src="/images/User flow-amico.png" alt="Simple" class="w-32 mx-auto mb-4">
+        <h3 class="text-xl font-semibold mb-2">Facile à utiliser</h3>
+        <p class="text-gray-600">Interface claire et intuitive, pensée pour les enseignants et les élèves.</p>
+      </div>
+      <div class="p-6 bg-white rounded-xl shadow hover:shadow-lg transition">
+        <img src="/images/Charts-pana.png" alt="Suivi" class="w-32 mx-auto mb-4">
+        <h3 class="text-xl font-semibold mb-2">Suivi clair</h3>
+        <p class="text-gray-600">Visualisez l'évolution des résultats grâce à des graphiques et tableaux.</p>
+      </div>
+      <div class="p-6 bg-white rounded-xl shadow hover:shadow-lg transition">
+        <img src="/images/Security On-bro.png" alt="Sécurité" class="w-32 mx-auto mb-4">
+        <h3 class="text-xl font-semibold mb-2">Accès sécurisé</h3>
+        <p class="text-gray-600">Authentification et gestion des rôles pour protéger vos données.</p>
+      </div>
+    </div>
+  </div>
+</section>
 
-<ul>
-    <li>Facile à utiliser</li>
-    <li>Suivi clair des résultats</li>
-    <li>Accès sécurisé</li>
-</ul>
+<section class="bg-indigo-700 text-white py-16">
+  <div class="max-w-4xl mx-auto px-6 text-center">
+    <h2 class="text-3xl font-bold mb-4">Parce que suivre les progrès doit être simple</h2>
+    <p class="mb-6">Commencez dès maintenant à utiliser Gradebook dans votre établissement.</p>
+    <a href="{{ path('app_login') }}" class="px-8 py-3 bg-yellow-300 text-indigo-900 font-semibold rounded-lg shadow hover:bg-yellow-400 transition">Accéder</a>
+  </div>
+</section>
 
-<p>
-    Parce que suivre les progrès de vos élèves doit être simple
-</p>
-
-<div>
-    <a href="">À propos</a>
-    <a href="">Contact</a>
-</div>
+<footer class="bg-gray-900 text-gray-400 py-8">
+  <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+    <p>&copy; {{ "now"|date("Y") }} Gradebook. Tous droits réservés.</p>
+    {#<div class="space-x-6">
+      <a href="#about" class="hover:text-white">À propos</a>
+      <a href="#contact" class="hover:text-white">Contact</a>
+    </div>#}
+  </div>
+</footer>
 
 {% endblock %}

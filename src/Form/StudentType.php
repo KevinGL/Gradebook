@@ -31,7 +31,7 @@ class StudentType extends AbstractType
                 'class' => SchoolClass::class,
                 'choice_label' => 'name',
             ])
-            ->add("save", SubmitType::class);
+            //->add("save", SubmitType::class);
         ;
     }
 

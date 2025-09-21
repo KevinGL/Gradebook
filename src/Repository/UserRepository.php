@@ -87,7 +87,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->getQuery()
             ->getResult();
         
-        return round(count($teachers) / $_ENV["LIMIT_PAGE"]) + 1;
+        return ceil(count($teachers) / $_ENV["LIMIT_PAGE"]);
     }
 
     public function findStudents(int $page): array
@@ -109,6 +109,6 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->getQuery()
             ->getResult();
         
-        return round(count($teachers) / $_ENV["LIMIT_PAGE"]) + 1;
+        return ceil(count($teachers) / $_ENV["LIMIT_PAGE"]);
     }
 }

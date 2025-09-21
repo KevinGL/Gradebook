@@ -1,10 +1,59 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Export</title>
+    <title>Export - Classe {{ schoolClass.name }}</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 14px;
+            margin: 40px;
+            color: #333;
+        }
+        h1, h2 {
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #222;
+        }
+        h1 {
+            font-size: 22px;
+        }
+        h2 {
+            font-size: 18px;
+            margin-top: 30px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        thead {
+            background: #f0f0f0;
+        }
+        th, td {
+            border: 1px solid #aaa;
+            padding: 8px 12px;
+            text-align: left;
+        }
+        th {
+            font-weight: bold;
+        }
+        tfoot td {
+            font-weight: bold;
+        }
+        .summary {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background: #fafafa;
+        }
+    </style>
 </head>
 <body>
+    <h1>Classe de {{ schoolClass.name }}</h1>
+    <p>Trimestre {{ trimester }} — Année {{ schoolClass.year }}</p>
+
+    <h2>Résultats par élève</h2>
     <table>
         <thead>
             <tr>
@@ -12,19 +61,20 @@
                 <th>Moyenne</th>
             </tr>
         </thead>
-
         <tbody>
             {% for key, value in averageByStudent %}
                 <tr>
-                    <th>{{ key }}</th>
+                    <td>{{ key }}</td>
                     <td>{{ value }}</td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
 
-    <div>
-        Moyenne générale : {{ average }}
+    <div class="summary">
+        <p><strong>Moyenne générale :</strong> {{ average }}</p>
+        <p><strong>Meilleure moyenne :</strong> {{ maxAverage }}</p>
+        <p><strong>Moins bonne moyenne :</strong> {{ minAverage }}</p>
     </div>
 </body>
 </html>

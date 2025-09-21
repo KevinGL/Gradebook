@@ -15,11 +15,33 @@
         <script
             src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
         </script>
+        <script src="https://cdn.tailwindcss.com"></script>
     </head>
     <body>
-        {% for messages in app.flashes %}
-            {{ messages | join("|") }}
-        {% endfor %}
+        {% if app.user %}
+            {% include "navbar.html.twig" %}
+        {% endif %}
+        
+        <div class="max-w-4xl mx-auto mt-6 space-y-3">
+            {% for label, messages in app.flashes %}
+                {% for message in messages %}
+                    <div 
+                        class="px-4 py-3 rounded-lg shadow text-sm font-medium
+                        {% if label == 'success' %}
+                            bg-green-100 text-green-800 border border-green-300
+                        {% elseif label == 'error' %}
+                            bg-red-100 text-red-800 border border-red-300
+                        {% elseif label == 'warning' %}
+                            bg-yellow-100 text-yellow-800 border border-yellow-300
+                        {% else %}
+                            bg-blue-100 text-blue-800 border border-blue-300
+                        {% endif %}
+                        ">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endfor %}
+        </div>
 
         {% block body %}{% endblock %}
     </body>

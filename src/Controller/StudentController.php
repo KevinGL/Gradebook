@@ -66,7 +66,7 @@ final class StudentController extends AbstractController
 
             $this->addFlash("success", "Note ajoutée à " . $student->getUsername());
 
-            return $this->redirectToRoute("view_student", ["id" => $id, "subjectID" => $this->getUser()->getSubject()->getId()]);
+            return $this->redirectToRoute("view_student", ["id" => $id, "subjectID" => $this->getUser()->getSubject()->getId(), "trimester" => $trimester]);
         }
 
         ////////////////////////////////////////////////////////

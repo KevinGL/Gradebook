@@ -1,82 +1,91 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ student.username }}{% endblock %}
+{% block title %}Détail de {{ student.username }}{% endblock %}
 
 {% block body %}
+<section class="min-h-screen bg-gray-50 py-12">
+    <div class="max-w-6xl mx-auto px-6 space-y-10">
 
-<div>
-    <h1>{{ student.username }}</h1>
-
-    {% for i in 1..3 %}
-        {% if i != trimester %}
-            <div>
-                <h2>Trimestre {{ i }}</h2>
-                {% for subject in subjects %}
-                    <a href="{{ url('view_student', {'id': student.id, 'subjectID': subject.id, 'trimester': i}) }}">{{ subject.name }} {{ app.user.subject and subject.id == app.user.subject.id ? "(Votre matière)" }}</a>
-                {% endfor %}
-            </div>
-        {% endif %}
-    {% endfor %}
-
-    <table>
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Note</th>
-                {% if "ROLE_ADMIN" in app.user.roles or currentSubject == app.user.subject %}
-                    <th>Action</th>
-                {% endif %}
-            </tr>
-        </thead>
-
-        <tbody>
-            {% for grade in grades %}
-                <tr>
-                    <th>
-                        {{ grade.date | date("d/m/Y") }}
-                    </th>
-                    <td>
-                        {{ grade.value }}
-                    </td>
-                    {% if "ROLE_ADMIN" in app.user.roles or ("ROLE_TEACHER" in app.user.roles and currentSubject == app.user.subject) %}
-                        <td>
-                            <a href="{{ url('edit_grade', {'id': grade.id, 'trimester': trimester}) }}">Modifier</a>
-                            <button id="{{ grade.id }}" class="delete">Supprimer</button>
-                        </td>
-                    {% endif %}
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
-    <div>
-        Moyenne de l'élève dans cette matière : {{ average }}
+    <div class="bg-white p-8 rounded-xl shadow">
+        <h1 class="text-3xl font-bold text-gray-800 mb-2">{{ student.username }}</h1>
+        <p class="text-gray-600">Classe : {{ student.class.name }}</p>
     </div>
 
-    <div>
-        <h3>Appréciations par trimestre</h3>
-        <table>
-            <thead>
+    <!-- Navigation autres trimestres -->
+    <div class="bg-white p-6 rounded-xl shadow">
+        <h2 class="text-xl font-semibold text-gray-700 mb-4">Autres trimestres</h2>
+        <div class="flex flex-wrap gap-4">
+            {% for i in 1..3 %}
+                {% if i != trimester %}
+                    <div>
+                        <h3 class="font-medium text-gray-700">Trimestre {{ i }}</h3>
+                        <div class="flex flex-wrap gap-2 mt-2">
+                            {% for subject in subjects %}
+                                <a href="{{ url('view_student', {'id': student.id, 'subjectID': subject.id, 'trimester': i}) }}"
+                                    class="px-3 py-1 bg-indigo-100 text-indigo-700 rounded-lg text-sm hover:bg-indigo-200 transition">
+                                    {{ subject.name }} {{ app.user.subject and subject.id == app.user.subject.id ? "(Votre matière)" }}
+                                </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="bg-white p-8 rounded-xl shadow">
+        <h2 class="text-xl font-semibold text-gray-700 mb-4">Notes - {{ currentSubject.name }}</h2>
+        <table class="w-full border-collapse">
+            <thead class="bg-gray-100">
                 <tr>
-                    <th>Trimestre</th>
-                    <th>Appréciation</th>
-                    {% if "ROLE_STUDENT" not in app.user.roles %}
-                        <th>Actions</th>
+                    <th class="px-4 py-2 text-left text-gray-700">Date</th>
+                    <th class="px-4 py-2 text-left text-gray-700">Note</th>
+                    {% if "ROLE_ADMIN" in app.user.roles or currentSubject == app.user.subject %}
+                        <th class="px-4 py-2 text-left text-gray-700">Actions</th>
                     {% endif %}
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="divide-y divide-gray-200">
+                {% for grade in grades %}
+                    <tr>
+                        <td class="px-4 py-2">{{ grade.date|date("d/m/Y") }}</td>
+                        <td class="px-4 py-2">{{ grade.value }}</td>
+                        {% if "ROLE_ADMIN" in app.user.roles or ("ROLE_TEACHER" in app.user.roles and currentSubject == app.user.subject) %}
+                            <td class="px-4 py-2 space-x-2">
+                                <a href="{{ url('edit_grade', {'id': grade.id, 'trimester': trimester}) }}"
+                                    class="text-sm text-indigo-600 hover:underline">Modifier</a>
+                                <button id="{{ grade.id }}" class="delete text-sm text-red-600 hover:underline">Supprimer</button>
+                            </td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <p class="mt-4 text-gray-700"><strong>Moyenne :</strong> {{ average }}</p>
+    </div>
+
+    <div class="bg-white p-8 rounded-xl shadow">
+        <h2 class="text-xl font-semibold text-gray-700 mb-4">Appréciations par trimestre</h2>
+        <table class="w-full border-collapse">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="px-4 py-2 text-left text-gray-700">Trimestre</th>
+                    <th class="px-4 py-2 text-left text-gray-700">Appréciation</th>
+                    {% if "ROLE_STUDENT" not in app.user.roles %}
+                        <th class="px-4 py-2 text-left text-gray-700">Actions</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
                 {% for a in appreciations %}
                     <tr>
-                        <th>
-                            {{ a.trimester }}
-                        </th>
-                        <td>
-                            {{ a.text }}
-                        </td>
+                        <td class="px-4 py-2">{{ a.trimester }}</td>
+                        <td class="px-4 py-2">{{ a.text }}</td>
                         {% if "ROLE_STUDENT" not in app.user.roles %}
-                            <td>
-                                <a href="{{ url('edit_app', {'id': a.id, 'trimester': trimester}) }}">Modifier</a>
+                            <td class="px-4 py-2">
+                                <a href="{{ url('edit_app', {'id': a.id}) }}"
+                                    class="text-sm text-indigo-600 hover:underline">Modifier
+                                </a>
                             </td>
                         {% endif %}
                     </tr>
@@ -85,48 +94,93 @@
         </table>
     </div>
 
-    <canvas id="chart" style="width:100%; height:400px;"></canvas>
+    <div class="bg-white p-8 rounded-xl shadow">
+        <h2 class="text-xl font-semibold text-gray-700 mb-4">Évolution des notes</h2>
+        <canvas id="chart" class="w-full h-96"></canvas>
+    </div>
 
     {% if "ROLE_ADMIN" in app.user.roles or ("ROLE_TEACHER" in app.user.roles and currentSubject.id == app.user.subject.id) %}
-        <div>
-            Ajouter une note
-            
-            {{ form(gradeForm) }}
+        <div class="bg-white p-8 rounded-xl shadow">
+            <h2 class="text-xl font-semibold text-gray-700 mb-6">Ajouter une note</h2>
+
+            {{ form_start(gradeForm, {'attr': {'class': 'space-y-6'}}) }}
+
+                <div>
+                    {{ form_label(gradeForm.value, 'Note', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                    {{ form_widget(gradeForm.value,
+                        {
+                            'attr':
+                            {
+                                'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500'
+                            }
+                        })
+                    }}
+                </div>
+
+                <div>
+                    {{ form_label(gradeForm.date, 'Date', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                    {{ form_widget(gradeForm.date,
+                        {
+                            'attr':
+                            {
+                                'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500'
+                            }
+                        })
+                    }}
+                </div>
+
+                <div>
+                    <button type="submit"
+                            class="px-6 py-2 bg-indigo-600 text-white font-medium rounded-lg shadow hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 transition">
+                        ➕ Ajouter la note
+                    </button>
+                </div>
+
+            {{ form_end(gradeForm) }}
+            </div>
+    {% endif %}
+
+    {% if "ROLE_ADMIN" in app.user.roles or "ROLE_TEACHER" in app.user.roles %}
+        <div class="flex justify-between">
+            <a href="{{ url('export_student', {'id': student.id, 'trimester': trimester}) }}"
+                class="px-6 py-3 bg-yellow-400 text-gray-900 font-semibold rounded-lg shadow hover:bg-yellow-500 transition">
+                📄 Générer bulletin
+            </a>
+            <a href="{{ url('view_schoolclass', {'id': student.class.id, 'trimester': trimester}) }}"
+                class="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg shadow hover:bg-gray-300 transition">
+                ← Revenir au dashboard
+            </a>
+        </div>
+    {% elseif "ROLE_STUDENT" in app.user.roles %}
+        <div class="flex justify-between">
+            <a href="{{ url('app_grades') }}"
+                class="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg shadow hover:bg-gray-300 transition">
+                ← Revenir au dashboard
+            </a>
         </div>
     {% endif %}
-</div>
 
-{% if "ROLE_ADMIN" in app.user.roles or "ROLE_TEACHER" in app.user.roles %}
-    <div>
-        <a href="{{ url('export_student', {'id': student.id, 'trimester': trimester}) }}">Générer bulletin</a>
     </div>
-{% endif %}
+</section>
 
 {% if "ROLE_STUDENT" not in app.user.roles %}
-    <div id="modal" hidden>
-        Êtes-vous sûr de vouloir supprimer cette note ?
-        <button id="delete_yes">Oui</button>
-        <button id="delete_no">Non</button>
+    <div id="modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+        <div class="bg-white p-6 rounded-xl shadow-lg">
+            <p class="mb-4">Êtes-vous sûr de vouloir supprimer cette note ?</p>
+            <div class="flex justify-end space-x-4">
+                <button id="delete_yes" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">Oui</button>
+                <button id="delete_no" class="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400">Non</button>
+            </div>
+        </div>
     </div>
 {% endif %}
 
 <script>
-    const xValues =
-    [
-        {% for grade in grades %}
-            "{{ grade.date | date("d/m/Y") }}",
-        {% endfor %}
-    ];
+    const xValues = [{% for grade in grades %}"{{ grade.date|date("d/m/Y") }}",{% endfor %}];
+    const yValues = [{% for grade in grades %}{{ grade.value }},{% endfor %}];
 
-    const yValues =
-    [
-        {% for grade in grades %}
-            {{ grade.value }},
-        {% endfor %}
-    ];
-    
     const ctx = document.getElementById("chart").getContext("2d");
-    const myChart = new Chart(ctx,
+    new Chart(ctx,
     {
         type: "line",
         data:
@@ -136,9 +190,9 @@
             [{
                 label: "{{ currentSubject.name }}",
                 fill: false,
-                lineTension: 0,
-                backgroundColor: "rgba(0,0,255,1.0)",
-                borderColor: "rgba(0,0,255,0.1)",
+                tension: 0.3,
+                backgroundColor: "rgba(37,99,235,1)",
+                borderColor: "rgba(37,99,235,0.3)",
                 data: yValues
             }]
         },
@@ -147,42 +201,40 @@
             responsive: true,
             scales:
             {
-                yAxes:
-                [{
-                    ticks:
+                y:
                     {
                         min: 0,
-                        max: 20
+                        max: 20,
+                        ticks: { stepSize: 2 }
                     }
-                }]
             }
         }
     });
-
-    /////////////////////////////////////////////////////////////
 
     const buttons_delete = Array.from(document.getElementsByClassName("delete"));
     const modal = document.getElementById("modal");
     let idDelete;
 
-    buttons_delete.map((b) =>
+    if(modal)
     {
-        b.addEventListener("click", () =>
+        buttons_delete.map((b) =>
         {
-            idDelete = b.id;
-            modal.hidden = false;
+            b.addEventListener("click", () =>
+            {
+                idDelete = b.id;
+                modal.classList.remove("hidden");
+            });
         });
-    });
 
-    document.getElementById("delete_yes").addEventListener("click", () =>
-    {
-        window.location.href = "/grades/delete/" + idDelete;
-    });
+        document.getElementById("delete_yes").addEventListener("click", () =>
+        {
+            window.location.href = "/grades/delete/" + idDelete + "/" + {{ trimester }};
+        });
 
-    document.getElementById("delete_no").addEventListener("click", () =>
-    {
-        modal.hidden = true;
-    });
+        document.getElementById("delete_no").addEventListener("click", () =>
+        {
+            modal.classList.add("hidden");
+        });
+    }
 </script>
-
 {% endblock %}

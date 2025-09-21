@@ -123,6 +123,8 @@ final class SchoolClassController extends AbstractController
 
         $average = 0.0;
         $averageByStudent = [];
+        $minAverage = 20;
+        $maxAverage = 0;
 
         foreach($students as $s)
         {
@@ -142,6 +144,16 @@ final class SchoolClassController extends AbstractController
             
             $average += $studentAverage;
 
+            if($studentAverage < $minAverage)
+            {
+                $minAverage = $studentAverage;
+            }
+
+            if($studentAverage > $maxAverage)
+            {
+                $maxAverage = $studentAverage;
+            }
+
             $averageByStudent [$s->getUsername()] = round($studentAverage, 2);
         }
 
@@ -153,7 +165,11 @@ final class SchoolClassController extends AbstractController
         $html = $this->renderView('school_class/pdf.html.twig',
         [
             'averageByStudent' => $averageByStudent,
-            'average' => round($average, 2)
+            'average' => round($average, 2),
+            "schoolClass" => $schoolClass,
+            "trimester" => $trimester,
+            "minAverage" => round($minAverage, 2),
+            "maxAverage" => round($maxAverage, 2)
         ]);
 
         return new Response(

@@ -17,7 +17,7 @@ class GradeType extends AbstractType
         $builder
             ->add('value', NumberType::class, ["label" => "Valeur", "html5" => true, "scale" => 2, "attr" => ["min" => 0, "max" => 20]])
             ->add("date", DateType::class)
-            ->add("save", SubmitType::class, ["label" => "Enregistrer"])
+            //->add("save", SubmitType::class, ["label" => "➕ Ajouter la note", "attr" => ["class" => "px-6 py-2 bg-indigo-600 text-white font-medium rounded-lg shadow hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 transition"]])
         ;
     }
 

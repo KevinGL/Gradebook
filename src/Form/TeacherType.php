@@ -37,7 +37,7 @@ class TeacherType extends AbstractType
                 'class' => Subject::class,
                 'choice_label' => 'name',
             ])
-            ->add("save", SubmitType::class)
+            //->add("save", SubmitType::class)
         ;
     }
 
