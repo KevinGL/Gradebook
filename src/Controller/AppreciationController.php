@@ -58,7 +58,7 @@ final class AppreciationController extends AbstractController
                 "form" => $form,
                 "student" => $appreciation->getStudent()->getId(),
                 "subject" => $appreciation->getSubject()->getId(),
-                "trimester" => $appreciation->getTrimester()->getId()
+                "trimester" => $appreciation->getTrimester()
             ]);
     }
 }
