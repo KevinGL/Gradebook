@@ -118,7 +118,13 @@ final class GradeController extends AbstractController
             return $this->redirectToRoute("view_student", ["id" => $grade->getStudent()->getId(), "subjectID" => $grade->getSubject()->getId(), "trimester" => $trimester]);
         }
 
-        return $this->render("grade/edit.html.twig", ["form" => $form]);
+        return $this->render("grade/edit.html.twig",
+        [
+            "form" => $form,
+            "studentID" => $grade->getStudent()->getId(),
+            "subjectID" => $grade->getSubject()->getId(),
+            "trimester" => $trimester
+        ]);
     }
 
     #[Route('/grades/delete/{id}/{trimester}', name: 'delete_grade')]
