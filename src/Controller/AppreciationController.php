@@ -53,6 +53,12 @@ final class AppreciationController extends AbstractController
             return $this->redirectToRoute("view_student", ["id" => $appreciation->getStudent()->getId(), "subjectID" => $this->getUser()->getSubject()->getId()]);
         }
 
-        return $this->render("appreciation/edit.html.twig", ["form" => $form]);
+        return $this->render("appreciation/edit.html.twig",
+            [
+                "form" => $form,
+                "student" => $appreciation->getStudent()->getId(),
+                "subject" => $appreciation->getSubject()->getId(),
+                "trimester" => $appreciation->getTrimester()->getId()
+            ]);
     }
 }
